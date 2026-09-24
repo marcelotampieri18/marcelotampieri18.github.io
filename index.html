@@ -40,6 +40,11 @@
     "linha": "O melhor look da noite leva prêmio",
     "detalhe": "Desfile na pista e a plateia decide."
   },
+  "musica": {
+    "youtubeId": "Zi_XLOBDo_Y",
+    "titulo": "Billie Jean",
+    "linha": "Billie Jean abre o convite. Na festa, o DJ cuida do resto."
+  },
   "openBar": {
     "titulo": "Open bar das 20h às 2h",
     "linha": "Entrada liberada, bebida liberada e comidinhas circulando a noite toda.",
@@ -168,6 +173,58 @@ main{display:block}
 .prize{margin:8px 0 0;display:inline-flex;align-items:center;gap:10px;padding:11px 18px;border-radius:999px;border:1.5px solid var(--gold);color:var(--gold);font-weight:700;font-size:15px;line-height:1.2;box-shadow:0 0 30px rgba(226,182,83,.14)}
 .prize svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
+/* portão de entrada */
+.gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--bg);text-align:center;padding:24px;transition:opacity .9s ease}
+.gate::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 40% at 50% 30%,rgba(226,182,83,.16),transparent 70%);pointer-events:none}
+.gate.is-out{opacity:0;pointer-events:none}
+.gate-inner{position:relative;display:grid;gap:22px;justify-items:center}
+.gate-name{margin:0;font:700 clamp(18px,5vw,28px)/1.1 var(--display);letter-spacing:.14em;text-transform:uppercase}
+.gate-btn{position:relative;border:0;cursor:pointer;min-height:64px;padding:0 40px;border-radius:999px;background:var(--gold);color:#140d02;font:700 18px/1 var(--body);letter-spacing:.01em}
+.gate-btn::before,.gate-btn::after{content:"";position:absolute;inset:-6px;border-radius:999px;border:1.5px solid var(--gold);opacity:0;animation:pulse 2.4s ease-out infinite}
+.gate-btn::after{animation-delay:1.2s}
+@keyframes pulse{0%{transform:scale(.92);opacity:.7}100%{transform:scale(1.35);opacity:0}}
+.gate-quiet{border:0;background:none;color:var(--muted);font:500 14px/1 var(--body);cursor:pointer;padding:8px;text-decoration:underline;text-underline-offset:4px}
+body.gated{overflow:hidden}
+
+/* botão de som */
+.sound{position:fixed;top:calc(14px + var(--sat));right:14px;z-index:40;width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(226,182,83,.7);background:rgba(5,5,5,.6);backdrop-filter:blur(6px);display:grid;place-items:center;cursor:pointer;padding:0}
+.sound svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sound .off{display:none}
+.sound.is-muted .on{display:none}
+.sound.is-muted .off{display:block}
+
+/* referências ao longo das telas */
+.when::after{content:"";position:absolute;left:50%;top:0;width:min(70vw,420px);height:70%;transform:translateX(-50%);pointer-events:none;
+  background:linear-gradient(180deg,rgba(243,240,234,.16),rgba(243,240,234,.04) 55%,transparent);
+  clip-path:polygon(44% 0,56% 0,100% 100%,0 100%)}
+.when .stack{z-index:1}
+.bg-fedora{position:absolute;left:50%;top:50%;width:min(150vw,900px);height:auto;transform:translate(-50%,-56%) rotate(-9deg);stroke:var(--gold);fill:none;stroke-width:.35;opacity:.16;pointer-events:none}
+.dress .stack{z-index:1}
+.bar::after{content:"";position:absolute;inset:-25%;pointer-events:none;
+  background:
+    radial-gradient(7px 11px at 18% 28%,rgba(243,240,234,.55),transparent 65%),
+    radial-gradient(6px 9px at 34% 72%,rgba(226,182,83,.6),transparent 65%),
+    radial-gradient(8px 12px at 52% 18%,rgba(243,240,234,.45),transparent 65%),
+    radial-gradient(5px 8px at 66% 60%,rgba(226,182,83,.55),transparent 65%),
+    radial-gradient(7px 10px at 80% 34%,rgba(243,240,234,.5),transparent 65%),
+    radial-gradient(6px 9px at 88% 78%,rgba(226,182,83,.5),transparent 65%),
+    radial-gradient(5px 8px at 12% 84%,rgba(243,240,234,.4),transparent 65%),
+    radial-gradient(6px 10px at 46% 90%,rgba(226,182,83,.45),transparent 65%),
+    radial-gradient(7px 11px at 72% 8%,rgba(243,240,234,.45),transparent 65%);
+  animation:disco 18s ease-in-out infinite alternate}
+@keyframes disco{from{transform:translate(-3%,-2%) rotate(-3deg)}to{transform:translate(3%,3%) rotate(3deg)}}
+.bar .stack{z-index:1}
+.floor{position:absolute;left:0;right:0;bottom:0;height:44%;display:grid;gap:3px;padding:0 3px 3px;
+  -webkit-mask-image:linear-gradient(to top,#000 55%,transparent);mask-image:linear-gradient(to top,#000 55%,transparent);touch-action:pan-y}
+.floor i{display:block;border:1px solid rgba(226,182,83,.14);border-radius:3px;transition:background .3s ease,box-shadow .3s ease}
+.floor i.lit{background:rgba(226,182,83,.3);box-shadow:0 0 18px rgba(226,182,83,.4),inset 0 0 14px rgba(243,240,234,.28)}
+.rsvp .stack{z-index:1;pointer-events:none}
+.rsvp .stack a{pointer-events:auto}
+
+/* trilha */
+.player-wrap{width:100%;max-width:22rem;aspect-ratio:16/9;border-radius:18px;overflow:hidden;border:1.5px solid rgba(226,182,83,.55);box-shadow:0 0 40px rgba(226,182,83,.14);background:#000}
+.player-wrap iframe,.player-wrap #player{display:block;width:100%;height:100%;border:0}
+
 /* botões */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
@@ -185,12 +242,23 @@ main{display:block}
 
 @media (prefers-reduced-motion:reduce){
   .in{opacity:1;transform:none;filter:none;transition:none}
-  .hint{animation:none}
+  .hint,.bar::after,.gate-btn::before,.gate-btn::after{animation:none}
   html{scroll-behavior:auto}
 }
 </style>
 </head>
 <body>
+<div class="gate" id="gate" hidden>
+  <div class="gate-inner">
+    <p class="gate-name">Tampi faz 35</p>
+    <button class="gate-btn" id="gate-enter" type="button">Toca pra entrar</button>
+    <button class="gate-quiet" id="gate-quiet" type="button">entrar sem som</button>
+  </div>
+</div>
+<button class="sound" id="sound" type="button" hidden aria-label="Silenciar">
+  <svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg>
+  <svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l4 6"/><path d="M21 9l-4 6"/></svg>
+</button>
 <main>
 
   <!-- 1. abertura -->
@@ -226,6 +294,11 @@ main{display:block}
 
   <!-- 3. dress code -->
   <section class="panel dress" id="look">
+    <svg class="bg-fedora" viewBox="0 0 48 48" aria-hidden="true">
+      <path d="M13 30V20c0-6 4-9 11-9s11 3 11 9v10"/>
+      <path d="M13 25h22"/>
+      <ellipse cx="24" cy="30.5" rx="19" ry="4.5"/>
+    </svg>
     <div class="stack">
       <h2 class="h2 in">O tema é rei do pop</h2>
       <p class="lead in">Festa a caráter. Todo mundo vem de Michael Jackson.</p>
@@ -266,7 +339,7 @@ main{display:block}
           <figcaption>meia branca</figcaption>
         </figure>
       </div>
-      <p class="muted in">Regra da casa: no mínimo um item do rei. O look completo vira lenda.</p>
+      <p class="muted in">Não é acessório, é fantasia. Chapéu, luva, jaqueta e meia branca: vem com o pacote inteiro.</p>
       <p class="prize in">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4"/><path d="M17 6h3a3 3 0 0 1-3 4"/><path d="M12 14v3"/><path d="M8 20h8"/><path d="M9 17h6v3H9z"/></svg>
         <span id="concurso-linha">O melhor look da noite leva prêmio</span>
@@ -286,6 +359,7 @@ main{display:block}
 
   <!-- 5. confirmação -->
   <section class="panel rsvp" id="confirmar">
+    <div class="floor" id="floor" aria-hidden="true"></div>
     <div class="stack">
       <h2 class="h2 in">Você vem?</h2>
       <p class="lead in">Me confirma até <span data-cfg="prazoConfirmacao">30 de novembro</span>.</p>
@@ -294,11 +368,21 @@ main{display:block}
     </div>
   </section>
 
+  <!-- 6. trilha -->
+  <section class="panel track" id="trilha">
+    <div class="stack">
+      <h2 class="h2 in">A trilha da noite</h2>
+      <p class="lead in" id="track-line">Billie Jean abre o convite. Na festa, o DJ cuida do resto.</p>
+      <div class="player-wrap in"><div id="player"></div></div>
+    </div>
+  </section>
+
 </main>
 
 <script>
 (function(){
   var cfg = JSON.parse(document.getElementById('party-config').textContent);
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- preenche textos e links a partir do bloco de dados ---------- */
   document.querySelectorAll('[data-cfg]').forEach(function(el){
@@ -337,6 +421,93 @@ main{display:block}
     det.textContent = cfg.concurso.detalhe || '';
     if (!cfg.concurso.detalhe) det.hidden = true;
   }
+
+  /* ---------- música (YouTube oficial) ---------- */
+  var yt = null, ytReady = false, wantPlay = false, hasMusic = !!(cfg.musica && cfg.musica.youtubeId);
+  var trackPanel = document.getElementById('trilha');
+  var soundBtn = document.getElementById('sound');
+  if (hasMusic) {
+    document.getElementById('track-line').textContent = cfg.musica.linha || '';
+    window.onYouTubeIframeAPIReady = function(){
+      yt = new YT.Player('player', {
+        videoId: cfg.musica.youtubeId,
+        width: '100%', height: '100%',
+        playerVars: { playsinline: 1, rel: 0, controls: 1, loop: 1, playlist: cfg.musica.youtubeId },
+        events: {
+          onReady: function(){ ytReady = true; if (wantPlay) { try { yt.playVideo(); } catch (e) {} } },
+          onError: function(){ trackPanel.hidden = true; }
+        }
+      });
+    };
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    tag.onerror = function(){ hasMusic = false; trackPanel.hidden = true; };
+    document.head.appendChild(tag);
+  } else {
+    trackPanel.hidden = true;
+  }
+  soundBtn.addEventListener('click', function(){
+    if (!yt || !ytReady) return;
+    if (yt.isMuted()) { yt.unMute(); soundBtn.classList.remove('is-muted'); soundBtn.setAttribute('aria-label','Silenciar'); }
+    else { yt.mute(); soundBtn.classList.add('is-muted'); soundBtn.setAttribute('aria-label','Ligar som'); }
+  });
+
+  /* ---------- portão de entrada ---------- */
+  var gate = document.getElementById('gate');
+  gate.hidden = false;
+  document.body.classList.add('gated');
+  function enter(withSound){
+    if (withSound && hasMusic) {
+      wantPlay = true;
+      if (ytReady) { try { yt.playVideo(); } catch (e) {} }
+      soundBtn.hidden = false;
+    }
+    gate.classList.add('is-out');
+    document.body.classList.remove('gated');
+    document.getElementById('abertura').classList.add('is-visible');
+    setTimeout(function(){ gate.remove(); }, 1000);
+  }
+  document.getElementById('gate-enter').addEventListener('click', function(){ enter(true); });
+  document.getElementById('gate-quiet').addEventListener('click', function(){ enter(false); });
+
+  /* ---------- calçada que acende (tela de confirmação) ---------- */
+  var floor = document.getElementById('floor');
+  var tiles = [];
+  function buildFloor(){
+    var w = floor.clientWidth, h = floor.clientHeight;
+    if (!w || !h) return;
+    var cols = Math.max(6, Math.round(w / 46)), rows = Math.max(3, Math.round(h / 46));
+    floor.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+    floor.innerHTML = '';
+    tiles = [];
+    for (var i = 0; i < cols * rows; i++) { var t = document.createElement('i'); floor.appendChild(t); tiles.push(t); }
+  }
+  function light(t){
+    if (!t || t.classList.contains('lit')) return;
+    t.classList.add('lit');
+    setTimeout(function(){ t.classList.remove('lit'); }, 900);
+  }
+  buildFloor();
+  window.addEventListener('resize', function(){ clearTimeout(floor._t); floor._t = setTimeout(buildFloor, 150); });
+  var rsvpVisible = false;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(es){ es.forEach(function(e){ rsvpVisible = e.isIntersecting; }); }, { threshold: 0.3 })
+      .observe(document.getElementById('confirmar'));
+  } else { rsvpVisible = true; }
+  if (!reduceMotion) {
+    setInterval(function(){
+      if (!rsvpVisible || document.hidden || !tiles.length) return;
+      light(tiles[(Math.random() * tiles.length) | 0]);
+      if (Math.random() < 0.5) light(tiles[(Math.random() * tiles.length) | 0]);
+    }, 380);
+  }
+  function touchFloor(ev){
+    var p = ev.touches ? ev.touches[0] : ev;
+    var el = document.elementFromPoint(p.clientX, p.clientY);
+    if (el && el.parentNode === floor) light(el);
+  }
+  floor.addEventListener('pointermove', touchFloor);
+  floor.addEventListener('touchmove', touchFloor, { passive: true });
 
   var rsvp = document.getElementById('rsvp');
   if (!cfg.formularioUrl) {
@@ -380,6 +551,7 @@ main{display:block}
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
+        if (e.target.id === 'abertura' && document.body.classList.contains('gated')) return;
         e.target.classList.toggle('is-visible', e.isIntersecting);
         if (e.target.id === 'abertura') heroVisible = e.isIntersecting;
       });
@@ -392,7 +564,6 @@ main{display:block}
   /* ---------- luva de lantejoulas ---------- */
   var canvas = document.getElementById('glove');
   var ctx = canvas.getContext('2d');
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W = 300, H = 380, scale = 1;
 
   function rr(c, x, y, w, h, r){
