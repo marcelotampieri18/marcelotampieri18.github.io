@@ -676,17 +676,71 @@ body.sheet-open .sheet{transform:none}
   /* ---------- salvar na agenda ---------- */
   safe('agenda', function(){
   var cal = document.getElementById('cal');
-  if (cfg.agenda) {
-    var isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
-    function utc(iso){ return new Date(iso).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''); }
-    var gcal = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
-      + '&text=' + encodeURIComponent(cfg.aniversariante + ' faz ' + cfg.idade)
-      + '&dates=' + utc(cfg.inicio) + '/' + utc(cfg.fim)
-      + '&details=' + encodeURIComponent(cfg.agenda.descricao || '')
-      + '&location=' + encodeURIComponent(cfg.local + ', ' + cfg.endereco);
-    cal.href = (isApple && cfg.agenda.icsUrl) ? cfg.agenda.icsUrl : gcal;
-    if (isApple && cfg.agenda.icsUrl) cal.removeAttribute('target');
-  } else { cal.hidden = true; }
+  if (!cfg.agenda) { cal.hidden = true; return; }
+
+  var ua = navigator.userAgent;
+  var isIOS = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var isMac = /Macintosh/.test(ua) && !isIOS;
+  var titulo = cfg.aniversariante + ' faz ' + cfg.idade;
+  var local = cfg.local + ', ' + cfg.endereco;
+  var pagina = /^https?:/.test(location.href) ? location.href.split('#')[0] : '';
+
+  function utc(iso){ return new Date(iso).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''); }
+  function esc(s){ return String(s || '').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n'); }
+  function fold(line){ var out = []; while (line.length > 60) { out.push(line.slice(0, 60)); line = ' ' + line.slice(60); } out.push(line); return out.join('\r\n'); }
+
+  /* Android, Windows e o resto: Google Agenda com o evento pronto */
+  var gcal = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(titulo)
+    + '&dates=' + utc(cfg.inicio) + '/' + utc(cfg.fim)
+    + '&ctz=America/Sao_Paulo'
+    + '&details=' + encodeURIComponent(cfg.agenda.descricao || '')
+    + '&location=' + encodeURIComponent(local);
+
+  /* iPhone e Mac: o evento (.ics) e gerado aqui mesmo, sem arquivo separado no repositorio */
+  var linhas = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//' + esc(titulo) + '//convite//PT',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    'UID:' + utc(cfg.inicio) + '-tampi35@' + (location.hostname || 'convite'),
+    'DTSTAMP:' + utc(new Date().toISOString()),
+    'DTSTART:' + utc(cfg.inicio),
+    'DTEND:' + utc(cfg.fim),
+    'SUMMARY:' + esc(titulo),
+    'DESCRIPTION:' + esc(cfg.agenda.descricao || ''),
+    'LOCATION:' + esc(local)
+  ];
+  if (pagina) linhas.push('URL:' + pagina);
+  linhas.push(
+    'BEGIN:VALARM',
+    'TRIGGER:-P1D',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:' + esc('Amanhã: ' + titulo),
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  );
+  var ics = linhas.map(fold).join('\r\n') + '\r\n';
+
+  function usarGoogle(){ cal.href = gcal; cal.target = '_blank'; }
+  function usarIcs(){
+    var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    cal.href = URL.createObjectURL(blob);
+    cal.removeAttribute('target');
+    if (isIOS) cal.removeAttribute('download'); else cal.download = 'tampi-35.ics'; /* iPhone abre na agenda; Mac baixa o arquivo */
+  }
+
+  if ((isIOS || isMac) && window.Blob && window.URL && URL.createObjectURL) usarIcs(); else usarGoogle();
+
+  /* Se um dia o .ics for publicado no repositorio, o botao passa a usar o arquivo (caminho mais robusto no iPhone) */
+  if ((isIOS || isMac) && cfg.agenda.icsUrl && window.fetch && /^https?:/.test(location.protocol)) {
+    fetch(cfg.agenda.icsUrl, { method: 'HEAD', cache: 'no-store' }).then(function(r){
+      if (r.ok && /text\/calendar/i.test(r.headers.get('content-type') || '')) { cal.href = cfg.agenda.icsUrl; cal.removeAttribute('download'); }
+    }).catch(function(){});
+  }
   });
 
   /* ---------- ideias de look ---------- */

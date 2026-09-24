@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tampi faz 35//convite//PT
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:20261219T230000Z-tampi35@marcelotampieri18.github.io
+DTSTAMP:20260924T222115Z
+DTSTART:20261219T230000Z
+DTEND:20261220T050000Z
+SUMMARY:Tampi faz 35
+DESCRIPTION:Festa a caráter\, tema rei do pop. Open bar. Con
+ firme presença em https://forms.gle/wX3SENYb6y2WYRvy6
+LOCATION:E-Garden Club\, Rua Inácio Pereira da Rocha\, 496\,
+  Pinheiros
+URL:https://marcelotampieri18.github.io/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Amanhã: Tampi faz 35
+END:VALARM
+END:VEVENT
+END:VCALENDAR
